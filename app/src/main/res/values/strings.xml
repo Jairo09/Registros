@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Registro de Estudiantes</string>
+    <string name="add">Agregar</string>
+    <string name="agregar_alumno">Agregar Alumno</string>
+    <string name="nombre">Nombre: </string>
+    <string name="edad">Edad: </string>
+    <string name="carnet">Carnet: </string>
+    <string name="carrera">Carrera: </string>
+    <string name="editar">Editar</string>
+    <string name="eliminar">Eliminar</string>
+    <string name="actualizar">Editar Alumno</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="aceptar">Guardar</string>
+
+
+</resources>
