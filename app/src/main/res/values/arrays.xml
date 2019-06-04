@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="carreras_array">
+    <array name="carreras_array">
+        <item>Seleccione una carrera</item>
         <item>Ingeniería de sistemas informáticos</item>
         <item>Licenciatura en idiomas</item>
         <item>Licenciatura en mercadeo internacional</item>
         <item>Doctorado en medicina</item>
         <item>Licenciatura en memes</item>
-    </string-array>
+    </array>
 </resources>

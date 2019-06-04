@@ -3,16 +3,23 @@ package com.example.registros;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
+
 import java.util.ArrayList;
 
 
@@ -91,6 +98,16 @@ public class MainActivity extends AppCompatActivity {
         lstAlumnos.setAdapter(adaptador);
     }
 
+    //Metodo para adaptar modelo a spiner
+    public void AdaptarSpiner(){
+        String [] opciones= {"Opcion Uno", "Opcion Dos", "Opcion Tres"};
+        Spinner spinner = findViewById(R.id.idspinner);
+       // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, opciones);
+        spinner.setAdapter(adapter);
+
+    }
+
     //Metodos para mostrar los botones de accion en menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
@@ -113,27 +130,44 @@ public class MainActivity extends AppCompatActivity {
 
     //Metodo para abrir Alerta y agregar Estudiante
     public void alertNuevaPersona(){
+
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         final View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.dialog_agregar, null);
+        builder.setCancelable(false);
         builder.setView(view);
+
+
 
         final EditText edtNombre = view.findViewById(R.id.nomAlum);
         final EditText edtEdad = view.findViewById(R.id.edadAlum);
         final EditText edtCarn = view.findViewById(R.id.carnAlum);
-        final EditText edtCarr = view.findViewById(R.id.carrAlum);
+        //Spinner
+        String [] opciones = {"Ingrese carrera", "Ingeniería de sistemas informáticos", "Licenciatura en idiomas", "Licenciatura en mercadeo internacional", "Doctorado en medicina", "Licenciatura en memes"};
+        final Spinner spinner = view.findViewById(R.id.idspinner);
+        // Creando un arrayAdapter y asignandolo al spinner
+        ArrayAdapter <String> adapter = new ArrayAdapter<String>(MainActivity.this, R.layout.spinner_item_configuracion, opciones){
+            @Override
+            public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                if (position == 0){
+                    TextView textView = new TextView(MainActivity.this);
+                    textView.setHeight(0);
+                    textView.setVisibility(view.GONE);
+                    convertView = textView;
+                    return convertView;
+                }else{
+                    return super.getDropDownView(position, null, parent);
+                }
+
+            }
+        };
+        spinner.setAdapter(adapter);
+        //spinner.setPrompt("Seleccione una carrera");
 
         builder.setMessage("Agregar Estudiante");
         builder.setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                String nombre = edtNombre.getText().toString().trim();
-                String edad = edtEdad.getText().toString();
-                String carnet = edtCarn.getText().toString();
-                String carrera = edtCarr.getText().toString();
-                if (nombre.length()>0 || edad.length()>0 || carnet.length()>0 || carrera.length()>0 ){
-                    agregarAlumno(nombre, edad, carnet, carrera);
-                    Toast.makeText(getApplicationContext(), "Estudiante Agregado", Toast.LENGTH_SHORT).show();
-                }
+
 
             }
         });
@@ -141,12 +175,36 @@ public class MainActivity extends AppCompatActivity {
         builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-
+                Toast.makeText(MainActivity.this, "Cancelado, Los datos no se han guardado", Toast.LENGTH_LONG).show();
             }
         });
 
-        AlertDialog alertDialog = builder.create();
+       final AlertDialog alertDialog = builder.create();
         alertDialog.show();
+        /*Esto captura el evento del boton positivo y dependiendo de las codiciones
+          y las validaciones se cerrará el alert*/
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override public void onClick(View v) {
+                        String nombre = edtNombre.getText().toString().trim();
+                        String edad = edtEdad.getText().toString().trim();
+                        String carnet = edtCarn.getText().toString().trim();
+                        String carrera = spinner.getSelectedItem().toString();
+                        if (nombre.length()>0 && edad.length()>0 && carnet.length()>0){
+                            if (carrera.equals("Ingrese carrera")){
+                                Toast.makeText(getApplicationContext(), "Seleccione una carrera", Toast.LENGTH_SHORT).show();
+                            }else{
+                                agregarAlumno(nombre, edad, carnet, carrera);
+                                Toast.makeText(getApplicationContext(), "Estudiante Agregado", Toast.LENGTH_SHORT).show();
+                                alertDialog.dismiss();
+                            }
+                        }else {
+                            // Si no hay nada escrito en los EditText lo avisamos.
+                            Toast.makeText(MainActivity.this, "No se permiten campos vacíos", Toast.LENGTH_SHORT).show();
+
+                        }
+                    }
+                });
 
     }
 

@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:orientation="vertical" android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+
+    >
 
     <EditText
         android:id="@+id/nomAlum"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15sp"
+        android:maxLength="50"
         android:ems="10"
         android:inputType="textPersonName"
         android:hint="@string/nombre"
@@ -17,29 +19,24 @@
         android:id="@+id/edadAlum"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10sp"
+        android:maxLength="3"
         android:ems="10"
         android:hint="@string/edad"
-        android:inputType="textPersonName" />
+        android:inputType="number" />
 
     <EditText
         android:id="@+id/carnAlum"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10sp"
+        android:maxLength="7"
         android:ems="10"
         android:inputType="textPersonName"
         android:hint="@string/carnet"
          />
 
-    <EditText
-        android:id="@+id/carrAlum"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10sp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:hint="@string/carrera"
-         />
+    <Spinner
+        android:id="@+id/idspinner"
+        android:layout_width="fill_parent"
+        android:layout_height="52dp" />
 
 </LinearLayout>

@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:textSize="20dp"
-    android:backgroundTint="#1B1A1A"
-    android:textColor="#F0F2F3"
+    android:background="@drawable/my_border"
+    android:textColor="#FF5722"
+    android:padding="10sp"
     xmlns:android="http://schemas.android.com/apk/res/android" />
