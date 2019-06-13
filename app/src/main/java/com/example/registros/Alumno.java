@@ -3,21 +3,28 @@ package com.example.registros;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.widget.Toast;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
-public class Alumno implements Parcelable {
+public class Alumno extends RealmObject implements Parcelable {
+
+    @PrimaryKey
+    private String Carnet;
+
     private String Nombre;
     private String Edad;
-    private String Carnet;
     private String Carrera;
 
+    public Alumno(){
 
+    }
 
-    public Alumno(String nombre, String edad, String carnet, String carrera) {
+    public Alumno(String nombre, String edad, String carnet, String carrera){
+        this.Carnet = carnet;
+        this.Nombre = nombre;
+        this.Edad = edad;
+        this.Carrera = carrera;
 
-        Nombre = nombre;
-        Edad = edad;
-        Carnet = carnet;
-        Carrera = carrera;
 
     }
 

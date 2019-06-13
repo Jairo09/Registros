@@ -22,24 +22,32 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import io.realm.Realm;
+import io.realm.RealmChangeListener;
+import io.realm.RealmResults;
 
-public class MainActivity extends AppCompatActivity {
+
+public class MainActivity extends AppCompatActivity implements RealmChangeListener<RealmResults<Alumno>> {
 
     private static final int REQUES_CODE = 10;
     private ListView lstAlumnos;
+    private RealmResults<Alumno> listaAlumnos;
     private AdaptadorAlumnos adaptador;
     private ArrayList<Alumno> persona = new ArrayList<Alumno>();
     public int posic =0;
-
+    private Alumno alumno;
+    Realm realm;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        realm = Realm.getDefaultInstance();
         Adaptar();
+    }
 
+    private void listenOnClick(){
         //pinchar el listview
         lstAlumnos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -56,13 +64,54 @@ public class MainActivity extends AppCompatActivity {
         lstAlumnos.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 
             @Override
-            public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int pos, long id) {
+            public boolean onItemLongClick(AdapterView<?> arg0,final View view, int pos, long id) {
                 //Metodo para abrir alerta de borrar Alumnos
-                alertBorrarAlumno(pos);
-
+                //alertBorrarAlumno(pos);
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setMessage("¿Seguro que deseas eliminar?")
+                        .setTitle("Eliminar")
+                        .setPositiveButton("Eliminar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                eliminarAlumno(view);
+                                Adaptar();
+                            }
+                        })
+                        .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                            }
+                        });
+                AlertDialog Notificacion = builder.create();
+                Notificacion.show();
                 return true;
             }
         });
+
+       /* lstAlumnos.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(final View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setMessage("¿Seguro que deseas eliminar?")
+                        .setTitle("Eliminar")
+                        .setPositiveButton("Eliminar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                eliminarAlumno(view);
+                            }
+                        })
+                        .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                            }
+                        });
+                AlertDialog Notificacion = builder.create();
+                Notificacion.show();
+                return false;
+            }
+        });*/
 
     }
 
@@ -92,10 +141,12 @@ public class MainActivity extends AppCompatActivity {
 
     //Metodo para adaptar modelo a ListView
     public void Adaptar(){
-        adaptador = new AdaptadorAlumnos(this, persona);
 
+        listaAlumnos = realm.where(Alumno.class).findAll();
         lstAlumnos = findViewById(R.id.lvLista);
+        adaptador = new AdaptadorAlumnos(this, listaAlumnos);
         lstAlumnos.setAdapter(adaptador);
+        listenOnClick();
     }
 
     //Metodo para adaptar modelo a spiner
@@ -188,8 +239,11 @@ public class MainActivity extends AppCompatActivity {
                     @Override public void onClick(View v) {
                         String nombre = edtNombre.getText().toString().trim();
                         String edad = edtEdad.getText().toString().trim();
-                        String carnet = edtCarn.getText().toString().trim();
+                        String carnet = edtCarn.getText().toString().trim().toUpperCase();
                         String carrera = spinner.getSelectedItem().toString();
+
+                        Alumno alumExiste = new Alumno();
+
                         if (nombre.length()>0 && edad.length()>0 && carnet.length()>0){
                             if (carrera.equals("Ingrese carrera")){
                                 Toast.makeText(getApplicationContext(), "Seleccione una carrera", Toast.LENGTH_SHORT).show();
@@ -219,9 +273,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 Toast.makeText(MainActivity.this, "Eliminado", Toast.LENGTH_LONG).show();
-                persona.remove(posicion);
+               persona.remove(posicion);
                 Adaptar();
-
             }
         });
 
@@ -239,10 +292,33 @@ public class MainActivity extends AppCompatActivity {
 
     //Metodo para agregar alumnos a la lista
     public void agregarAlumno(String nombre, String edad, String carnet, String carrera){
-        persona.add(new Alumno(nombre,edad,carnet,carrera));
+       // persona.add(new Alumno(nombre,edad,carnet,carrera));
         //Toast.makeText(MainActivity.this, "ArrayList creado", Toast.LENGTH_LONG).show();
+        realm.beginTransaction();
+        Alumno alumno = new Alumno(nombre, edad, carnet, carrera);
+        realm.copyToRealm(alumno);
+        realm.commitTransaction();
         Adaptar();
     }
 
+    public void eliminarAlumno(View view){
+        Alumno alum = listaAlumnos.get(lstAlumnos.getPositionForView(view));
+        realm.beginTransaction();
+        if (alum != null){
+            alum.deleteFromRealm();
+            realm.commitTransaction();
+        }
+    }
 
+
+
+    @Override
+    public void onChange(RealmResults<Alumno> alumnos) {
+
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+
+    }
 }
