@@ -242,15 +242,19 @@ public class MainActivity extends AppCompatActivity implements RealmChangeListen
                         String carnet = edtCarn.getText().toString().trim().toUpperCase();
                         String carrera = spinner.getSelectedItem().toString();
 
-                        Alumno alumExiste = new Alumno();
 
                         if (nombre.length()>0 && edad.length()>0 && carnet.length()>0){
                             if (carrera.equals("Ingrese carrera")){
                                 Toast.makeText(getApplicationContext(), "Seleccione una carrera", Toast.LENGTH_SHORT).show();
                             }else{
-                                agregarAlumno(nombre, edad, carnet, carrera);
-                                Toast.makeText(getApplicationContext(), "Estudiante Agregado", Toast.LENGTH_SHORT).show();
-                                alertDialog.dismiss();
+                                if (!validarCarnet(carnet)){
+                                    agregarAlumno(nombre, edad, carnet, carrera);
+                                    Toast.makeText(getApplicationContext(), "Estudiante Agregado", Toast.LENGTH_SHORT).show();
+                                    alertDialog.dismiss();
+                                }else{
+                                    Toast.makeText(getApplicationContext(), "El alumno ya existe", Toast.LENGTH_SHORT).show();
+                                }
+
                             }
                         }else {
                             // Si no hay nada escrito en los EditText lo avisamos.
@@ -310,7 +314,15 @@ public class MainActivity extends AppCompatActivity implements RealmChangeListen
         }
     }
 
+    public boolean validarCarnet(String carnet){
+        Alumno alumExist = realm.where(Alumno.class).equalTo("Carnet", carnet).findFirst();
+        if (alumExist != null){
+            return true;
+        }else{
+            return false;
+        }
 
+    }
 
     @Override
     public void onChange(RealmResults<Alumno> alumnos) {
