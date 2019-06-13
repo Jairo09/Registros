@@ -47,14 +47,20 @@ public class MainActivity extends AppCompatActivity implements RealmChangeListen
         Adaptar();
     }
 
+    @Override
+    protected void onRestart(){
+        super.onRestart();
+        Adaptar();
+    }
+
     private void listenOnClick(){
         //pinchar el listview
         lstAlumnos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
-            public void onItemClick(AdapterView<?> a, View arg1, int position, long arg3) {
+            public void onItemClick(AdapterView<?> a,final View view, int position, long arg3) {
 
-                Enviar(position);
+                Enviar(view);
 
             }
 
@@ -117,9 +123,8 @@ public class MainActivity extends AppCompatActivity implements RealmChangeListen
 
 
     //Metodo para abrir otra actividad pasandole un objeto Alumno
-    public void Enviar(int posicion){
-        Alumno alum = persona.get(posicion);
-        posic = posicion;
+    public void Enviar(View view){
+        Alumno alum = listaAlumnos.get(lstAlumnos.getPositionForView(view));
 
         Intent abrir = new Intent(this, Actualizar.class);
         abrir.putExtra("alumno", alum);
@@ -127,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements RealmChangeListen
     }
 
     //Metodo quqe recibe la respuesta de otra actividad (ActivityforResult)
-    @Override
+  /*  @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
          if (requestCode == REQUES_CODE && resultCode == RESULT_OK){
                 if (data.hasExtra("Estudiante")){
@@ -137,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements RealmChangeListen
                 }
          }
 
-    }
+    }*/
 
     //Metodo para adaptar modelo a ListView
     public void Adaptar(){
