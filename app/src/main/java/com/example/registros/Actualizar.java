@@ -16,6 +16,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import io.realm.Realm;
+import io.realm.RealmResults;
+
 public class Actualizar extends AppCompatActivity {
 
     private EditText etNombre, etEdad, etCarnet;
@@ -23,11 +26,16 @@ public class Actualizar extends AppCompatActivity {
     private Button btAceptar;
     private  Button btCancelar;
 
+    Realm realm;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_actualizar);
+
+        realm = Realm.getDefaultInstance();
 
         etNombre = findViewById(R.id.actNombre);
         etEdad = findViewById(R.id.actEdad);
@@ -76,23 +84,32 @@ public class Actualizar extends AppCompatActivity {
                 // Si los EditText no están vacíos recogemos el resultado.
                 if (nombre.length()>0 && edad.length()>0 && carnet.length()>0 ) {
 
+                    //Recibimos el carnet de realm para usarlo al momento de actualizar
                     //Actualizamos los valores del objeto Alumno con los valores de los EditText
-                    alum.setNombre(nombre);
+                    //Esto nos devuelve todos los datos del alumno
+                    Alumno alumnEditar = realm.where(Alumno.class).equalTo("Carnet", carnet).findFirst();
+                    realm.beginTransaction();
+                    //Actualizamos los datos del alumno al cual le pertenece ese carnet
+                    alumnEditar.setNombre(nombre);
+                    alumnEditar.setEdad(edad);
+                    alumnEditar.setCarrera(carrera);
+                    realm.commitTransaction();
+                    /*alum.setNombre(nombre);
                     alum.setEdad(edad);
                     alum.setCarnet(carnet);
-                    alum.setCarrera(carrera);
+                    alum.setCarrera(carrera);*/
 
 
                     // Recogemos el intent que ha llamado a esta actividad.
-                    Intent in = getIntent();
+                    //Intent in = getIntent();
                     // Le metemos el resultado que queremos mandar a la actividad principal.
-                    in.putExtra("Estudiante", alum);
+                    //in.putExtra("Estudiante", alumnEditar);
                     /* Establecemos el resultado, y volvemos a la actividad
                        principal. La variable que introducimos en primer lugar
                        "RESULT_OK" es de la propia actividad, no tenemos que
                        declararla nosotros.
                     */
-                    setResult(RESULT_OK, in);
+                    //setResult(RESULT_OK, in);
                     Toast.makeText(Actualizar.this, "Datos actualizados", Toast.LENGTH_SHORT).show();
                     // Finalizamos la Activity para volver a la anterior
                     finish();
@@ -115,6 +132,9 @@ public class Actualizar extends AppCompatActivity {
          });
 
     }
+
+
+
 
     //Metodo para Regreso a la actividad anterior
     @Override

@@ -1,6 +1,7 @@
 package com.example.registros;
 
 import android.app.Activity;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +14,11 @@ import java.util.List;
 public class AdaptadorAlumnos extends ArrayAdapter<Alumno> {
 
     Activity context;
-    ArrayList<Alumno> personas;
+    List<Alumno> personas;
 
-    public AdaptadorAlumnos(Activity context, ArrayList<Alumno> datos) {
-        super(context, R.layout.alumno_list, datos);
-        this.personas = datos;
+    public AdaptadorAlumnos(Activity context, List<Alumno> listaAlumnos) {
+        super(context, R.layout.alumno_list, listaAlumnos);
+        this.personas = listaAlumnos;
     }
 
     public View getView(final int posicion, View convertView, ViewGroup parent) {
