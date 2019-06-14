@@ -74,7 +74,7 @@ public class Actualizar extends AppCompatActivity {
 
 
                 // Si los EditText no están vacíos recogemos el resultado.
-                if (nombre.length()>0 || edad.length()>0 || carnet.length()>0 ) {
+                if (nombre.length()>0 && edad.length()>0 && carnet.length()>0 ) {
 
                     //Actualizamos los valores del objeto Alumno con los valores de los EditText
                     alum.setNombre(nombre);
@@ -108,10 +108,7 @@ public class Actualizar extends AppCompatActivity {
 
                 @Override
                 public void onClick(View vi) {
-                    // Si se pulsa el botón, establecemos el resultado como cancelado.
-                    // Al igual que con "RESULT_OK", esta variable es de la activity.
-                    setResult(RESULT_CANCELED);
-                    Toast.makeText(Actualizar.this, "Cancelado", Toast.LENGTH_SHORT).show();
+
                     // Finalizamos la Activity para volver a la anterior
                     alertRegresar();
                 }
@@ -133,6 +130,9 @@ public class Actualizar extends AppCompatActivity {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+                // Si se pulsa el botón, establecemos el resultado como cancelado.
+                // Al igual que con "RESULT_OK", esta variable es de la activity.
+                setResult(RESULT_CANCELED);
                 Toast.makeText(Actualizar.this, "Edicion cancelada", Toast.LENGTH_LONG).show();
                  finish();
 
