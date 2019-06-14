@@ -84,9 +84,12 @@ public class Actualizar extends AppCompatActivity {
                 // Si los EditText no están vacíos recogemos el resultado.
                 if (nombre.length()>0 || edad.length()>0 || carnet.length()>0 ) {
 
+                    //Recibimos el carnet de realm para usarlo al momento de actualizar
                     //Actualizamos los valores del objeto Alumno con los valores de los EditText
+                    //Esto nos devuelve todos los datos del alumno
                     Alumno alumnEditar = realm.where(Alumno.class).equalTo("Carnet", carnet).findFirst();
                     realm.beginTransaction();
+                    //Actualizamos los datos del alumno al cual le pertenece ese carnet
                     alumnEditar.setNombre(nombre);
                     alumnEditar.setEdad(edad);
                     alumnEditar.setCarrera(carrera);

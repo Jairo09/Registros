@@ -43,7 +43,9 @@ public class MainActivity extends AppCompatActivity implements RealmChangeListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+       //Inicializamos realm
         realm = Realm.getDefaultInstance();
+       //Llamamos al método adaptar para que muestre los datos de realm
         Adaptar();
     }
 
@@ -79,6 +81,8 @@ public class MainActivity extends AppCompatActivity implements RealmChangeListen
                         .setPositiveButton("Eliminar", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
+                            //Le enviamos el elemento seleccionado según la vista al método eliminar
+                            //y actualizamos el listview
                                 eliminarAlumno(view);
                                 Adaptar();
                             }
@@ -124,8 +128,9 @@ public class MainActivity extends AppCompatActivity implements RealmChangeListen
 
     //Metodo para abrir otra actividad pasandole un objeto Alumno
     public void Enviar(View view){
+        //Recibimos el elemento seleccionado según la posición del elemento en el listview
         Alumno alum = listaAlumnos.get(lstAlumnos.getPositionForView(view));
-
+        //Le enviamos los datos del elemento e iniciamos la actividad para editar y actualizar
         Intent abrir = new Intent(this, Actualizar.class);
         abrir.putExtra("alumno", alum);
         startActivityForResult(abrir, REQUES_CODE);
@@ -146,23 +151,24 @@ public class MainActivity extends AppCompatActivity implements RealmChangeListen
 
     //Metodo para adaptar modelo a ListView
     public void Adaptar(){
-
+        //Recibimos los datos de realm y luego los mandamos al listview
         listaAlumnos = realm.where(Alumno.class).findAll();
         lstAlumnos = findViewById(R.id.lvLista);
         adaptador = new AdaptadorAlumnos(this, listaAlumnos);
         lstAlumnos.setAdapter(adaptador);
+        //Aquí escuchamos los clicks que se darán en la actividad
         listenOnClick();
     }
 
     //Metodo para adaptar modelo a spiner
-    public void AdaptarSpiner(){
+  /*  public void AdaptarSpiner(){
         String [] opciones= {"Opcion Uno", "Opcion Dos", "Opcion Tres"};
         Spinner spinner = findViewById(R.id.idspinner);
        // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, opciones);
         spinner.setAdapter(adapter);
 
-    }
+    }*/
 
     //Metodos para mostrar los botones de accion en menu
     @Override
@@ -198,7 +204,7 @@ public class MainActivity extends AppCompatActivity implements RealmChangeListen
         final EditText edtEdad = view.findViewById(R.id.edadAlum);
         final EditText edtCarn = view.findViewById(R.id.carnAlum);
         //Spinner
-        String [] opciones = {"Ingrese carrera", "Ingeniería de sistemas informáticos", "Licenciatura en idiomas", "Licenciatura en mercadeo internacional", "Doctorado en medicina", "Licenciatura en memes"};
+        String [] opciones = {"Ingrese carrera", "Ingeniería de sistemas informáticos", "Licenciatura en idiomas", "Licenciatura en mercadeo internacional", "Doctorado en medicina", "Ingeniería Industrial", "Licenciatura en memes"};
         final Spinner spinner = view.findViewById(R.id.idspinner);
         // Creando un arrayAdapter y asignandolo al spinner
         ArrayAdapter <String> adapter = new ArrayAdapter<String>(MainActivity.this, R.layout.spinner_item_configuracion, opciones){
@@ -252,11 +258,11 @@ public class MainActivity extends AppCompatActivity implements RealmChangeListen
                             if (carrera.equals("Ingrese carrera")){
                                 Toast.makeText(getApplicationContext(), "Seleccione una carrera", Toast.LENGTH_SHORT).show();
                             }else{
-                                if (!validarCarnet(carnet)){
+                                if (!validarCarnet(carnet)){ //Si el carnet no existe creará el alumno
                                     agregarAlumno(nombre, edad, carnet, carrera);
                                     Toast.makeText(getApplicationContext(), "Estudiante Agregado", Toast.LENGTH_SHORT).show();
                                     alertDialog.dismiss();
-                                }else{
+                                }else{ // Sino nos dice que el alumno ya existe y no lo crea
                                     Toast.makeText(getApplicationContext(), "El alumno ya existe", Toast.LENGTH_SHORT).show();
                                 }
 
@@ -272,7 +278,7 @@ public class MainActivity extends AppCompatActivity implements RealmChangeListen
     }
 
     //Metodo para abrir Alerta de Borrar Alumnos
-    public void alertBorrarAlumno(final int posicion){
+  /*  public void alertBorrarAlumno(final int posicion){
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 
         Alumno al = persona.get(posicion);
@@ -297,12 +303,14 @@ public class MainActivity extends AppCompatActivity implements RealmChangeListen
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
 
-    }
+    }*/
 
     //Metodo para agregar alumnos a la lista
     public void agregarAlumno(String nombre, String edad, String carnet, String carrera){
        // persona.add(new Alumno(nombre,edad,carnet,carrera));
         //Toast.makeText(MainActivity.this, "ArrayList creado", Toast.LENGTH_LONG).show();
+        //Iniciamos una transacción de realm luego de recibir los datos del alert y los mandamos a realm
+        //luego actualizamos el listview
         realm.beginTransaction();
         Alumno alumno = new Alumno(nombre, edad, carnet, carrera);
         realm.copyToRealm(alumno);
@@ -311,19 +319,21 @@ public class MainActivity extends AppCompatActivity implements RealmChangeListen
     }
 
     public void eliminarAlumno(View view){
+        //Recibimos los datos del alumno por la vista
         Alumno alum = listaAlumnos.get(lstAlumnos.getPositionForView(view));
         realm.beginTransaction();
-        if (alum != null){
+        if (alum != null){ // Comprueba si el alumno existe, en dicho caso lo elimina
             alum.deleteFromRealm();
             realm.commitTransaction();
         }
     }
 
     public boolean validarCarnet(String carnet){
+        //Recibimos el carnet que tenemos escrito en el edittext del alert y verificamos si existe en realm
         Alumno alumExist = realm.where(Alumno.class).equalTo("Carnet", carnet).findFirst();
-        if (alumExist != null){
+        if (alumExist != null){ //Si existe le devolvemos un true al alert
             return true;
-        }else{
+        }else{//sino le devolvemos un false
             return false;
         }
 

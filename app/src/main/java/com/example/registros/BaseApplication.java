@@ -16,6 +16,7 @@ public class BaseApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+       //Iniciamos realm y le mandamos la configuración
         Realm.init(getApplicationContext());
         setUpConfig();
         Realm realm = Realm.getDefaultInstance();
@@ -23,6 +24,7 @@ public class BaseApplication extends Application {
     }
 
     private void setUpConfig(){
+      //Definimos la configuración de realm
         RealmConfiguration config = new RealmConfiguration
                 .Builder()
                 .deleteRealmIfMigrationNeeded()
@@ -30,12 +32,4 @@ public class BaseApplication extends Application {
         Realm.setDefaultConfiguration(config);
     }
 
-
-
-    private <T extends RealmObject> AtomicInteger getByTabla(Realm realm, Class<T> anyClass){
-
-        RealmResults<T> results = realm.where(anyClass).findAll();
-        return (results.size()>0)? new AtomicInteger(results.max("id").intValue()): new AtomicInteger();
-
-    }
 }
