@@ -8,6 +8,7 @@
     android:layout_gravity="center"
     tools:context=".Actualizar">
 
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -31,7 +32,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/actualizar"
                     android:textAlignment="center"
-                    android:textColor="#E91E63"
+                    android:textColor="#90AFC5"
                     android:textSize="26dp" />
             </LinearLayout>
 
@@ -133,7 +134,7 @@
                     android:layout_height="61dp"
                     android:layout_margin="10dp"
                     android:layout_weight="1"
-                    android:backgroundTint="#FBE75D5D"
+                    android:backgroundTint="#505160"
                     android:text="@string/cancelar"
                     android:textColor="#FCFFFFFF"
                     android:textSize="18sp" />
@@ -144,7 +145,7 @@
                     android:layout_height="61dp"
                     android:layout_margin="10dp"
                     android:layout_weight="1"
-                    android:backgroundTint="#70AC70"
+                    android:backgroundTint="#2A3132"
                     android:text="@string/aceptar"
                     android:textColor="#FCFFFFFF"
                     android:textSize="18sp" />

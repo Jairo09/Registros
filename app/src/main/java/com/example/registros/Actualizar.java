@@ -41,7 +41,7 @@ public class Actualizar extends AppCompatActivity {
         etEdad = findViewById(R.id.actEdad);
         etCarnet = findViewById(R.id.actCarnet);
         //Spinner
-        String [] opciones = { "Ingeniería de sistemas informáticos", "Licenciatura en idiomas", "Licenciatura en mercadeo internacional", "Doctorado en medicina", "Licenciatura en memes"};
+        String [] opciones = { "Ingeniería de sistemas informáticos", "Licenciatura en idiomas", "Licenciatura en mercadeo internacional", "Doctorado en medicina", "Ingeniería Industrial", "Licenciatura en memes"};
         final Spinner spinner = findViewById(R.id.idspinnerdos);
         // Creando un arrayAdapter y asignandolo al spinner
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(Actualizar.this, R.layout.spinner_item_configuracion, opciones);
